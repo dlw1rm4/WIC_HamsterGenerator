@@ -14,9 +14,8 @@ emotion = "hapy"; // ❌ TypeScript error: typo caught immediately
 */
 
 interface EmotionResult {
-  //Any object that's a EmotionResult must have emotion type and a number
+  //Any object that's a EmotionResult must have emotion type
   emotion: Emotion;
-  confidence: number;
 }
 
 // ─── Emotion configuration to its image ───────────────────────────────────────────────────────────
@@ -113,10 +112,7 @@ function classifyEmotion(
     }
   }
 
-  // Normalize confidence to 0–1 range (cap at 1)
-  const confidence = Math.min(bestScore / 1.5, 1);
-
-  return { emotion: best, confidence };
+  return { emotion: best };
 }
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
@@ -125,8 +121,6 @@ const video           = document.getElementById("webcam") as HTMLVideoElement;
 const webcamButton    = document.getElementById("webcamButton") as HTMLButtonElement;
 const statusEl        = document.getElementById("status")!;
 const emotionNameEl   = document.getElementById("emotion-name")!;
-const confidenceBar   = document.getElementById("confidence-bar")!;
-const confidenceVal   = document.getElementById("confidence-val")!;
 const expressionImg   = document.getElementById("expression-img") as HTMLImageElement;
 const placeholder     = document.getElementById("image-placeholder")!;
 const caption         = document.getElementById("expression-caption")!;
@@ -210,8 +204,8 @@ async function predict() {
 
     if (result.faceLandmarks?.length) {
       if (result.faceBlendshapes?.[0]?.categories) {
-        const { emotion, confidence } = classifyEmotion(result.faceBlendshapes[0].categories);
-        updateEmotionSmoothed(emotion, confidence);
+        const { emotion } = classifyEmotion(result.faceBlendshapes[0].categories);
+        updateEmotionSmoothed(emotion);
       }
     } else {
       setStatus("no face detected");
@@ -224,7 +218,7 @@ async function predict() {
 
 // ─── Smoothing ────────────────────────────────────────────────────────────────
 
-function updateEmotionSmoothed(emotion: Emotion, confidence: number) {
+function updateEmotionSmoothed(emotion: Emotion) {
   emotionHistory.push(emotion);
   if (emotionHistory.length > HISTORY_SIZE) emotionHistory.shift();
 
@@ -239,12 +233,12 @@ function updateEmotionSmoothed(emotion: Emotion, confidence: number) {
     if (count > max) { max = count; dominant = e; }
   }
 
-  updateUI(dominant, confidence);
+  updateUI(dominant);
 }
 
 // ─── UI updates ───────────────────────────────────────────────────────────────
 
-function updateUI(emotion: Emotion, confidence: number) {
+function updateUI(emotion: Emotion) {
   if (emotion === currentEmotion) return; // no change, skip re-render
   currentEmotion = emotion;
 
@@ -253,11 +247,6 @@ function updateUI(emotion: Emotion, confidence: number) {
   // Emotion name
   emotionNameEl.textContent = emotion;
   emotionNameEl.className = `emotion-name emotion-${emotion}`;
-
-  // Confidence bar
-  const pct = Math.round(confidence * 100);
-  confidenceBar.style.width = pct + "%";
-  confidenceVal.textContent = pct + "%";
 
   // Image
   expressionImg.src = EMOTION_IMAGES[emotion];
@@ -279,8 +268,6 @@ function clearEmotion() {
   currentEmotion = null;
   emotionNameEl.textContent = "—";
   emotionNameEl.className = "emotion-name";
-  confidenceBar.style.width = "0%";
-  confidenceVal.textContent = "0%";
   expressionImg.classList.add("hidden");
   placeholder.classList.remove("hidden");
   caption.textContent = "";
