@@ -2,7 +2,6 @@ import "./style.css";
 import {
   FaceLandmarker,
   FilesetResolver,
-  DrawingUtils,
 } from "@mediapipe/tasks-vision";
 
 type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited";
@@ -123,8 +122,6 @@ function classifyEmotion(
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 
 const video           = document.getElementById("webcam") as HTMLVideoElement;
-const canvasEl        = document.getElementById("output_canvas") as HTMLCanvasElement;
-const canvasCtx       = canvasEl.getContext("2d")!;
 const webcamButton    = document.getElementById("webcamButton") as HTMLButtonElement;
 const statusEl        = document.getElementById("status")!;
 const emotionNameEl   = document.getElementById("emotion-name")!;
@@ -142,7 +139,6 @@ let faceLandmarker: FaceLandmarker;
 let webcamRunning = false;
 let lastVideoTime = -1;
 let currentEmotion: Emotion | null = null;
-const drawingUtils = new DrawingUtils(canvasCtx);
 
 // Smoothing: keep a short history of emotions and pick the most frequent
 const HISTORY_SIZE = 8;
@@ -206,35 +202,13 @@ webcamButton.addEventListener("click", async () => {
 async function predict() {
   if (!webcamRunning) return;
 
-  // Resize canvas to match video
-  const ratio = video.videoHeight / video.videoWidth;
-  canvasEl.width  = video.videoWidth;
-  canvasEl.height = video.videoHeight;
-  canvasEl.style.width  = video.offsetWidth + "px";
-  canvasEl.style.height = video.offsetWidth * ratio + "px";
-
   const nowMs = performance.now();
   if (lastVideoTime !== video.currentTime) {
     lastVideoTime = video.currentTime;
 
     const result = faceLandmarker.detectForVideo(video, nowMs);
 
-    canvasCtx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-
     if (result.faceLandmarks?.length) {
-      for (const landmarks of result.faceLandmarks) {
-        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION,
-          { color: "#00ff9920", lineWidth: 1 });
-        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL,
-          { color: "#00ff9960", lineWidth: 1.5 });
-        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE,
-          { color: "#00e5ff90", lineWidth: 1.5 });
-        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE,
-          { color: "#00e5ff90", lineWidth: 1.5 });
-        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS,
-          { color: "#ff6b9d90", lineWidth: 1.5 });
-      }
-
       if (result.faceBlendshapes?.[0]?.categories) {
         const { emotion, confidence } = classifyEmotion(result.faceBlendshapes[0].categories);
         updateEmotionSmoothed(emotion, confidence);
