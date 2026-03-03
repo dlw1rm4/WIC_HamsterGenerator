@@ -8,6 +8,10 @@ body {
   font-family: var(--font-primary);
 }
 
+.hidden {
+  display: none;
+}
+
 #info-card {
   position: fixed;
   top: 0;
@@ -30,3 +34,4 @@ body {
   text-align: center;
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
+
