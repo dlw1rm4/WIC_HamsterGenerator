@@ -14,7 +14,37 @@
   </head>
   <body>
     <button type="button" id="info">Info</button>
+    <div id="info-card" class="hidden">
+  <div class="card-content">
+    <h2>How to Use This Website</h2>
+    <ul>
+      <li>Upload your hamster image.</li>
+      <li>Click generate.</li>
+      <li>Download your result.</li>
+    </ul>
+    <button id="close-btn">Close</button>
+  </div>
+</div>
     <a href="/camera.html"><button type="button" id="getstarted">Get started!</button></a>
     <script type="module" src="/src/camera.ts"></script>
+    <script>
+const infoBtn = document.getElementById("info-btn");
+const closeBtn = document.getElementById("close-btn");
+const infoCard = document.getElementById("info-card");
+
+infoBtn.addEventListener("click", () => {
+  infoCard.classList.remove("hidden");
+});
+
+closeBtn.addEventListener("click", () => {
+  infoCard.classList.add("hidden");
+});
+
+infoCard.addEventListener("click", (e) => {
+  if (e.target === infoCard) {
+    infoCard.classList.add("hidden");
+  }
+});
+</script>
   </body>
 </html>
