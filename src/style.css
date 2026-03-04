@@ -6,8 +6,50 @@
 
 body {
   font-family: var(--font-primary);
+  margin: 0;
+  min-height: 100vh;
+  background-image: url("/images/backgrounds/Background_Day.jpg"); /* default */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 0.3s ease;
 }
 
+body.theme-day {
+  background-image: url("/images/backgrounds/Background_Day.jpg");
+}
+
+body.theme-night {
+  background-image: url("/images/backgrounds/Background_Night.jpg");
+}
+
+body.theme-pink {
+  background-image: url("/images/backgrounds/Background_Pink.png");
+}
+
+.theme-buttons {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.theme-buttons button {
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.theme-buttons button:hover {
+  background-color: rgba(0,0,0,0.8);
+}
 .hidden {
   display: none !important;
 }
