@@ -10,7 +10,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+    
+    <style>
+    .hidden {
+      display: none !important;
+    }
+  </style>
   </head>
   <body class="theme-day">
     <button type="button" id="info">Info</button>
@@ -23,5 +28,41 @@
       <button id="pinkBtn">Pink</button>
     </div>
     <script src="/src/landing.js" defer></script>
+    <div id="info-card" class="hidden">
+  <div class="card-content">
+    <h2>How to Use This Website</h2>
+    <ul>
+      <li>Click get started.</li>
+      <li>Give access to your camera.</li>
+      <li>Put your face inside the frame.</li>
+      <li>Try different facial expression.</li>
+      <li>Scroll and see your Hamster!</li>
+    </ul>
+    <button id="close-btn">Close</button>
+  </div>
+</div>
+    
+    <a href="/camera.html"><button type="button" id="getstarted">Get started!</button></a>
+    <script type="module" src="/src/camera.ts"></script>
+    
+ <script>      
+const infoBtn = document.getElementById("info");
+const closeBtn = document.getElementById("close-btn");
+const infoCard = document.getElementById("info-card");
+
+infoBtn.addEventListener("click", () => {
+  infoCard.classList.remove("hidden");
+});
+
+closeBtn.addEventListener("click", () => {
+  infoCard.classList.add("hidden");
+});
+
+infoCard.addEventListener("click", (e) => {
+  if (e.target === infoCard) {
+    infoCard.classList.add("hidden");
+  }
+});
+</script>
   </body>
 </html>
