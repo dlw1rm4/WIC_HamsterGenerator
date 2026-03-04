@@ -5,15 +5,6 @@ import {
 } from "@mediapipe/tasks-vision";
 
 type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited";
-/* Helpful when identified unspecified emotions
-
-
-EX: 
-let emotion: Emotion = "happy";
-emotion = "confused"; // ❌ TypeScript error: not a valid Emotion
-emotion = "hapy"; // ❌ TypeScript error: typo caught immediately
-*/
-
 type ThemeMode = "day" | "night" | "pink";
 
 interface EmotionResult {
@@ -39,7 +30,7 @@ const EMOTION_IMAGES: Record<Emotion, string> = {
 function classifyEmotion(
   blendShapes: { categoryName: string; score: number }[],
 ): EmotionResult {
-  const s: Record<string, number> = {}; // Covert array to lookup dictionary (key:value)
+  const s: Record<string, number> = {}; // s is thhe dictionary of different features and their values, such as s["mouthSmileLeft"] = 0.8
   for (const b of blendShapes) {
     s[b.categoryName] = b.score;
   }
@@ -102,7 +93,9 @@ function classifyEmotion(
 
   // Clamp negatives to 0
   for (const key of Object.keys(scores) as Emotion[]) {
-    if (scores[key] < 0) scores[key] = 0;
+    if (scores[key] < 0){
+      scores[key] = 0;
+    } 
   }
 
   // Find winner
@@ -178,7 +171,7 @@ async function init() {
 
   loadingOverlay.classList.add("hidden");
   webcamButton.disabled = false;
-  setStatus("model ready — hit Start Camera");
+  setStatus("Camera's ready! Hit Start!");
 }
 
 // ─── Webcam ───────────────────────────────────────────────────────────────────
@@ -193,7 +186,8 @@ webcamButton.addEventListener("click", async () => {
     const tracks = (video.srcObject as MediaStream)?.getTracks();
     tracks?.forEach(t => t.stop());
     video.srcObject = null;
-    setStatus("camera stopped");
+    setStatus("Camera stopped!");
+    clearEmotion();
     return;
   }
 
@@ -204,11 +198,10 @@ webcamButton.addEventListener("click", async () => {
       webcamRunning = true;
       webcamButton.querySelector(".btn-text")!.textContent = "Stop Camera";
       webcamButton.classList.add("active");
-      setStatus("detecting...");
       requestAnimationFrame(predict);
     }, { once: true });
   } catch (err) {
-    setStatus("camera access denied");
+    setStatus("Camera access denied.");
     console.error(err);
   }
 });
@@ -230,7 +223,7 @@ async function predict() {
         updateEmotionSmoothed(emotion);
       }
     } else {
-      setStatus("no face detected");
+      setStatus("No face detected...");
       clearEmotion();
     }
   }
@@ -264,7 +257,7 @@ function updateUI(emotion: Emotion) {
   if (emotion === currentEmotion) return; // no change, skip re-render
   currentEmotion = emotion;
 
-  setStatus(`detected: ${emotion}`);
+  setStatus(`Detected: ${emotion}`);
 
   // Emotion name
   emotionNameEl.textContent = emotion;

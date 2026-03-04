@@ -8,7 +8,7 @@
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="has-background theme-day">
 
@@ -19,12 +19,10 @@
   </div>
 
   <!-- Loading overlay -->
-  <div id="loading-overlay">
-    <p>Loading model...</p>
-  </div>
+  <div id="loading-overlay"></div>
 
   <!-- Status message -->
-  <div id="status">Initializing...</div>
+  <div id="status"></div>
 
   <!-- Webcam button -->
   <button id="webcamButton" disabled>
@@ -32,17 +30,16 @@
   </button>
 
   <!-- Video feed -->
-  <video id="webcam" autoplay playsinline></video>
-
-  <!-- Canvas overlay for landmarks -->
-  <canvas id="output_canvas"></canvas>
+  <div id="video-container">
+    <video id="webcam" autoplay playsinline></video>
+    <img id="expression-img" class="hidden" alt="Expression"/>
+  </div>
 
   <!-- Emotion display -->
-  <div id="emotion-name">—</div>
+  <div id="emotion-name"></div>
 
   <!-- Expression image -->
   <div id="image-placeholder">Waiting for face...</div>
-  <img id="expression-img" class="hidden" alt="Expression" />
   <div id="expression-caption"></div>
 
   <script src="/src/landing.js" defer></script>

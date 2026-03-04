@@ -1,39 +1,70 @@
 :root {
-  --font-primary: "Quicksand", "Poppins",
-                  -apple-system, BlinkMacSystemFont, "Segoe UI",
-                  Roboto, Helvetica, Arial, sans-serif;
+  --font-primary:
+    "Quicksand", "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-welcome: "Pixelify Sans", sans-serif;
 
-  --theme-btn-bg: rgba(0, 0, 0, 0.6);
+  --theme-btn-bg: rgba(0, 0, 0, 1);
   --theme-btn-hover: rgba(0, 0, 0, 0.85);
   --theme-btn-color: #ffffff;
-  --theme-accent: #4CAF50;
 }
 
 body.theme-day {
-  --theme-btn-bg: rgba(255, 200, 80, 0.75);
-  --theme-btn-hover: rgba(255, 170, 30, 0.95);
+  --theme-btn-bg: rgba(255, 200, 80, 1);
+  --theme-btn-hover: rgba(255, 170, 30, 0.85);
   --theme-btn-color: #3a2a00;
   --theme-accent: #f5a623;
 }
 
 body.theme-night {
-  --theme-btn-bg: rgba(30, 20, 80, 0.8);
-  --theme-btn-hover: rgba(60, 40, 140, 0.95);
+  --theme-btn-bg: rgba(30, 20, 80, 1);
+  --theme-btn-hover: rgba(60, 40, 140, 0.85);
   --theme-btn-color: #c8b8ff;
   --theme-accent: #7c5cbf;
 }
 
 body.theme-pink {
-  --theme-btn-bg: rgba(255, 160, 180, 0.75);
-  --theme-btn-hover: rgba(255, 120, 150, 0.95);
+  --theme-btn-bg: rgba(255, 160, 180, 1);
+  --theme-btn-hover: rgba(255, 120, 150, 0.85);
   --theme-btn-color: #5a0020;
   --theme-accent: #e91e8c;
 }
 
+/* ─── Base ─────────────────────────────────────────────────── */
 body {
   font-family: var(--font-primary);
   margin: 0;
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#dynamic-text {
+  font-family: var(--font-welcome);
+  font-size: clamp(2rem, 8vw, 6rem);
+  color: var(--theme-accent);
+  margin-bottom: 0.5em;
+  display: inline;
+  white-space: normal;
+  min-height: 1.2em;
+  border-right: 4px solid var(--theme-accent);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+#landing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+  padding: 5vh 5vw;
+  text-align: center;
 }
 
 body.has-background {
@@ -55,6 +86,65 @@ body.has-background.theme-pink {
   background-image: url("/images/backgrounds/Background_Pink.png");
 }
 
+.hidden {
+  display: none !important;
+}
+/* ─── Buttons ─────────────────────────────────────────────────── */
+.theme-buttons button,
+#webcamButton,
+#info,
+#getstarted,
+.card-content #close-btn {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 6px;
+  border: none;
+}
+
+.theme-buttons button,
+#webcamButton,
+#info,
+#getstarted {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 2px solid var(--theme-btn-color);
+  border-radius: 0.8em;
+  background-color: var(--theme-btn-bg);
+  color: var(--theme-btn-color);
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+#info,
+#getstarted {
+  font-size: clamp(0.8rem, 1.8vw, 1.2rem);
+  padding: 0.6em 1.4em;
+  font-weight: 700;
+  border-radius: 0.8em;
+}
+
+.theme-buttons button:hover,
+#webcamButton:hover,
+#info:hover,
+#getstarted:hover,
+.card-content #close-btn:hover {
+  background-color: var(--theme-btn-hover);
+}
+
+.theme-buttons button:active,
+#webcamButton:active,
+#info:active,
+#getstarted:active,
+.card-content #close-btn:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* ─── Theme buttons position ───────────────────────────────── */
+
 .theme-buttons {
   position: fixed;
   top: 20px;
@@ -64,52 +154,18 @@ body.has-background.theme-pink {
   z-index: 1000;
 }
 
-.theme-buttons button {
-  padding: 8px 12px;
-  font-size: 14px;
+/* ─── Status / placeholder ─────────────────────────────────── */
+
+#status,
+#image-placeholder {
   font-family: var(--font-primary);
-  font-weight: 600;
-  cursor: pointer;
-  border: 2px solid var(--theme-btn-color);
-  border-radius: 6px;
-  background-color: var(--theme-btn-bg);
-  color: var(--theme-btn-color);
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
-.theme-buttons button:hover {
-  background-color: var(--theme-btn-hover);
-}
-
-#info,
-#getstarted {
-  padding: 10px 20px;
-  font-family: var(--font-primary);
-  font-weight: 700;
-  font-size: 15px;
-  cursor: pointer;
-  border: 2px solid var(--theme-btn-color);
-  border-radius: 8px;
-  background-color: var(--theme-btn-bg);
-  color: var(--theme-btn-color);
-  transition: background-color 0.2s, color 0.2s;
-}
-
-#info:hover,
-#getstarted:hover {
-  background-color: var(--theme-btn-hover);
-}
-
-.hidden {
-  display: none !important;
-}
+/* ─── Info card ────────────────────────────────────────────── */
 
 #info-card {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -119,35 +175,57 @@ body.has-background.theme-pink {
 
 .card-content {
   background: white;
-  padding: 30px;
-  border-radius: 12px;
-  width: 400px;
-  max-width: 90%;
+  width: clamp(280px, 40vw, 600px);
+  padding: clamp(16px, 3vw, 48px);
+  max-width: 500px;
+  min-width: 280px;
+  border-radius: clamp(12px, 1.5vw, 24px);
   text-align: center;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.3);
 }
 
-.card-content ul {
-  list-style: none;
-  padding: 0;
-  margin: 0 auto;
-  text-align: center;
+.card-content h2 {
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  margin-bottom: clamp(12px, 2vw, 24px);
+}
+
+.card-content ol {
+  display: inline-block;
+  font-size: clamp(0.9rem, 1.4vw, 1.3rem);
+  text-align: left;
+  padding-left: clamp(16px, 2vw, 28px);
+  margin: 0 auto clamp(16px, 2.5vw, 32px);
+  width: fit-content;
 }
 
 .card-content #close-btn {
-  margin-top: 20px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
+  display: block;
+  margin: clamp(16px, 2.5vw, 32px) auto 0;
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2.5vw, 28px);
+  border-radius: clamp(6px, 1vw, 14px);
   background-color: var(--theme-accent);
   color: white;
-  font-family: var(--font-primary);
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
   transition: filter 0.2s ease;
 }
 
-.card-content #close-btn:hover {
-  filter: brightness(0.9);
+#video-container {
+  position: relative;
+  width: fit-content;
+  margin: 10vh auto 0;
+}
+
+#webcam {
+  width: 60vw;
+  height: 45vw;
+  border-radius: 3em;
+  border: 0.8em solid var(--theme-btn-bg);
+}
+
+#expression-img {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%); /* sits above the forehead point */
+  width: 80px;
+  height: 80px;
 }
