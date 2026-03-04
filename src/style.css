@@ -2,28 +2,56 @@
   --font-primary: "Quicksand", "Poppins",
                   -apple-system, BlinkMacSystemFont, "Segoe UI",
                   Roboto, Helvetica, Arial, sans-serif;
+
+  --theme-btn-bg: rgba(0, 0, 0, 0.6);
+  --theme-btn-hover: rgba(0, 0, 0, 0.85);
+  --theme-btn-color: #ffffff;
+  --theme-accent: #4CAF50;
+}
+
+body.theme-day {
+  --theme-btn-bg: rgba(255, 200, 80, 0.75);
+  --theme-btn-hover: rgba(255, 170, 30, 0.95);
+  --theme-btn-color: #3a2a00;
+  --theme-accent: #f5a623;
+}
+
+body.theme-night {
+  --theme-btn-bg: rgba(30, 20, 80, 0.8);
+  --theme-btn-hover: rgba(60, 40, 140, 0.95);
+  --theme-btn-color: #c8b8ff;
+  --theme-accent: #7c5cbf;
+}
+
+body.theme-pink {
+  --theme-btn-bg: rgba(255, 160, 180, 0.75);
+  --theme-btn-hover: rgba(255, 120, 150, 0.95);
+  --theme-btn-color: #5a0020;
+  --theme-accent: #e91e8c;
 }
 
 body {
   font-family: var(--font-primary);
   margin: 0;
   min-height: 100vh;
-  background-image: url("/images/backgrounds/Background_Day.jpg"); /* default */
+}
+
+body.has-background {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: background-image 0.3s ease;
+  background-attachment: fixed;
 }
 
-body.theme-day {
+body.has-background.theme-day {
   background-image: url("/images/backgrounds/Background_Day.jpg");
 }
 
-body.theme-night {
+body.has-background.theme-night {
   background-image: url("/images/backgrounds/Background_Night.jpg");
 }
 
-body.theme-pink {
+body.has-background.theme-pink {
   background-image: url("/images/backgrounds/Background_Pink.png");
 }
 
@@ -39,17 +67,39 @@ body.theme-pink {
 .theme-buttons button {
   padding: 8px 12px;
   font-size: 14px;
+  font-family: var(--font-primary);
+  font-weight: 600;
   cursor: pointer;
-  border: none;
+  border: 2px solid var(--theme-btn-color);
   border-radius: 6px;
-  background-color: rgba(0,0,0,0.6);
-  color: white;
-  transition: background-color 0.2s;
+  background-color: var(--theme-btn-bg);
+  color: var(--theme-btn-color);
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .theme-buttons button:hover {
-  background-color: rgba(0,0,0,0.8);
+  background-color: var(--theme-btn-hover);
 }
+
+#info,
+#getstarted {
+  padding: 10px 20px;
+  font-family: var(--font-primary);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  border: 2px solid var(--theme-btn-color);
+  border-radius: 8px;
+  background-color: var(--theme-btn-bg);
+  color: var(--theme-btn-color);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+#info:hover,
+#getstarted:hover {
+  background-color: var(--theme-btn-hover);
+}
+
 .hidden {
   display: none !important;
 }
@@ -60,7 +110,7 @@ body.theme-pink {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -74,28 +124,30 @@ body.theme-pink {
   width: 400px;
   max-width: 90%;
   text-align: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .card-content ul {
-  list-style: none; 
-  padding: 0; 
-  margin: 0 auto;  
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
   text-align: center;
 }
+
 .card-content #close-btn {
   margin-top: 20px;
   padding: 8px 16px;
   border-radius: 8px;
   border: none;
-  background-color: #4CAF50;
+  background-color: var(--theme-accent);
   color: white;
+  font-family: var(--font-primary);
   font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: filter 0.2s ease;
 }
 
 .card-content #close-btn:hover {
-  background-color: #45a049;
+  filter: brightness(0.9);
 }
-
