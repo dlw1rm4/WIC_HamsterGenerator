@@ -1,7 +1,8 @@
 :root {
-  --font-primary: "Quicksand", "Poppins",
-                  -apple-system, BlinkMacSystemFont, "Segoe UI",
-                  Roboto, Helvetica, Arial, sans-serif;
+  --font-primary:
+    "Quicksand", "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-welcome: "Pixelify Sans", sans-serif;
 
   --theme-btn-bg: rgba(0, 0, 0, 1);
   --theme-btn-hover: rgba(0, 0, 0, 0.85);
@@ -34,6 +35,36 @@ body {
   font-family: var(--font-primary);
   margin: 0;
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#dynamic-text {
+  font-family: var(--font-welcome);
+  font-size: clamp(2rem, 8vw, 6rem);
+  color: var(--theme-accent);
+  margin-bottom: 0.5em;
+  display: inline;
+  white-space: normal;
+  min-height: 1.2em;
+  border-right: 4px solid var(--theme-accent);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+#landing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2vh;
+  padding: 5vh 5vw;
+  text-align: center;
 }
 
 body.has-background {
@@ -78,17 +109,21 @@ body.has-background.theme-pink {
   padding: 8px 12px;
   font-size: 14px;
   border: 2px solid var(--theme-btn-color);
+  border-radius: 0.8em;
   background-color: var(--theme-btn-bg);
   color: var(--theme-btn-color);
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
 }
 
 #info,
 #getstarted {
-  padding: 10px 20px;
-  font-size: 15px;
+  font-size: clamp(0.8rem, 1.8vw, 1.2rem);
+  padding: 0.6em 1.4em;
   font-weight: 700;
-  border-radius: 8px;
+  border-radius: 0.8em;
 }
 
 .theme-buttons button:hover,
@@ -140,29 +175,57 @@ body.has-background.theme-pink {
 
 .card-content {
   background: white;
-  padding: 30px;
-  border-radius: 12px;
-  width: 400px;
-  max-width: 90%;
+  width: clamp(280px, 40vw, 600px);
+  padding: clamp(16px, 3vw, 48px);
+  max-width: 500px;
+  min-width: 280px;
+  border-radius: clamp(12px, 1.5vw, 24px);
   text-align: center;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.3);
+}
+
+.card-content h2 {
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  margin-bottom: clamp(12px, 2vw, 24px);
 }
 
 .card-content ol {
   display: inline-block;
+  font-size: clamp(0.9rem, 1.4vw, 1.3rem);
   text-align: left;
-  padding-left: 20px;
-  margin: 0 auto 20px;
+  padding-left: clamp(16px, 2vw, 28px);
+  margin: 0 auto clamp(16px, 2.5vw, 32px);
   width: fit-content;
 }
 
 .card-content #close-btn {
   display: block;
-  margin: 20px auto 0;
-  padding: 8px 16px;
-  border-radius: 8px;
+  margin: clamp(16px, 2.5vw, 32px) auto 0;
+  padding: clamp(6px, 1vw, 12px) clamp(14px, 2.5vw, 28px);
+  border-radius: clamp(6px, 1vw, 14px);
   background-color: var(--theme-accent);
   color: white;
-  font-size: 16px;
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
   transition: filter 0.2s ease;
+}
+
+#video-container {
+  position: relative;
+  width: fit-content;
+  margin: 10vh auto 0;
+}
+
+#webcam {
+  width: 60vw;
+  height: 45vw;
+  border-radius: 3em;
+  border: 0.8em solid var(--theme-btn-bg);
+}
+
+#expression-img {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%); /* sits above the forehead point */
+  width: 80px;
+  height: 80px;
 }

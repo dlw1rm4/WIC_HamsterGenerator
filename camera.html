@@ -30,17 +30,16 @@
   </button>
 
   <!-- Video feed -->
-  <video id="webcam" autoplay playsinline></video>
-
-  <!-- Canvas overlay for landmarks -->
-  <canvas id="output_canvas"></canvas>
+  <div id="video-container">
+    <video id="webcam" autoplay playsinline></video>
+    <img id="expression-img" class="hidden" alt="Expression"/>
+  </div>
 
   <!-- Emotion display -->
   <div id="emotion-name"></div>
 
   <!-- Expression image -->
   <div id="image-placeholder">Waiting for face...</div>
-  <img id="expression-img" class="hidden" alt="Expression" />
   <div id="expression-caption"></div>
 
   <script src="/src/landing.js" defer></script>
