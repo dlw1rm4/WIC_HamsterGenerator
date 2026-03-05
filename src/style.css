@@ -229,3 +229,66 @@ body.has-background.theme-pink {
   width: 80px;
   height: 80px;
 }
+.theme-toggle{
+  position: fixed;
+  top: clamp(15px, 3vh, 30px);
+  right: clamp(15px, 3vw, 30px);
+
+  display: flex;
+  align-items: center;
+
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+
+  border-radius: 40px;
+  padding: 6px;
+
+  width: 120px;
+  height: 40px;
+
+  z-index: 999;
+}
+
+/* hide radio buttons */
+
+.theme-toggle input{
+  display:none;
+}
+
+/* icons */
+
+.theme-toggle label{
+  flex:1;
+  text-align:center;
+  cursor:pointer;
+  z-index:2;
+  font-size:18px;
+}
+
+/* sliding circle */
+
+.slider{
+  position:absolute;
+  left:6px;
+  width:32px;
+  height:32px;
+
+  background:white;
+  border-radius:50%;
+
+  transition: transform 0.3s ease;
+}
+
+/* slider movement */
+
+#sun:checked ~ .slider{
+  transform: translateX(0);
+}
+
+#flower:checked ~ .slider{
+  transform: translateX(40px);
+}
+
+#moon:checked ~ .slider{
+  transform: translateX(80px);
+}
