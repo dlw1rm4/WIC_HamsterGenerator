@@ -281,15 +281,15 @@ body.has-background.theme-pink {
 
 /* slider movement */
 
-#sun:checked ~ .slider{
+#day:checked ~ .slider{
   transform: translateX(0);
 }
 
-#flower:checked ~ .slider{
+#night:checked ~ .slider{
   transform: translateX(40px);
 }
 
-#moon:checked ~ .slider{
+#pink:checked ~ .slider{
   transform: translateX(80px);
 }
 
@@ -304,3 +304,4 @@ body.theme-flower{
 body.theme-moon{
   background: linear-gradient(#0f2027,#203a43);
 }
+
