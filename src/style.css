@@ -292,3 +292,15 @@ body.has-background.theme-pink {
 #moon:checked ~ .slider{
   transform: translateX(80px);
 }
+
+body.theme-sun{
+  background: linear-gradient(#8ec5fc,#e0c3fc);
+}
+
+body.theme-flower{
+  background: linear-gradient(#ffd1dc,#fff);
+}
+
+body.theme-moon{
+  background: linear-gradient(#0f2027,#203a43);
+}
