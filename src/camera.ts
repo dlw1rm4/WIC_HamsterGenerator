@@ -136,7 +136,6 @@ let faceLandmarker: FaceLandmarker;
 let webcamRunning = false;
 let lastVideoTime = -1;
 let currentEmotion: Emotion | null = null;
-let cameraStream: MediaStream | null = null;
 
 function setTheme(mode: ThemeMode) {
   const body = document.body;
@@ -165,7 +164,6 @@ async function requestCamera() {
   // Immediately request camera access
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    cameraStream = stream; // Save camera access status
     video.srcObject = stream;
     video.addEventListener(
       "loadeddata",
