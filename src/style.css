@@ -229,14 +229,13 @@ body.has-background.theme-pink {
   height: 80px;
 
   /* ————————————————THEME TOGGLE CONTAINER ————————————————————————————————*/
+/* ———————————————— THEME TOGGLE CONTAINER ————————————————— */
 .theme-toggle {
-  position: fixed; /* 保留 fixed，让它固定在右上角 */
+  position: fixed;
   top: clamp(15px, 3vh, 30px);
   right: clamp(15px, 3vw, 30px);
-
   display: flex;
   align-items: center;
-
   width: 135px;
   height: 46px;
   border-radius: 50px;
@@ -264,10 +263,10 @@ body.has-background.theme-pink {
   transition: opacity 0.3s;
 }
 
-/* 选中的 label 全显，未选中的半透明 */
 .theme-toggle input:checked + label {
   opacity: 1;
 }
+
 .theme-toggle input:not(:checked) + label {
   opacity: 0.5;
 }
@@ -278,17 +277,17 @@ body.has-background.theme-pink {
   height: 36px;
   border-radius: 50%;
   background: white;
-  left: 5px; /* 对应 padding */
+  left: 5px; 
   top: 5px;
   transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1;
 }
 
-/* --- 移动逻辑 (数值已微调以确保居中) --- */
+/* --- 修复后的移动逻辑，每个块都有完整的 {} --- */
 
 #day:checked ~ .slider {
-  transform: translateX(0px); /* 初始位置 */
+  transform: translateX(0px);
 }
 
 #night:checked ~ .slider {
