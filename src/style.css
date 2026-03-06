@@ -8,6 +8,9 @@
   --theme-btn-hover: rgba(0, 0, 0, 0.85);
   --theme-btn-color: #ffffff;
 }
+:root { background-image: url("/images/backgrounds/Background_Day.jpg"); }
+.theme-night { background-image: url("/images/backgrounds/Background_Night.jpg") !important; }
+.theme-pink { background-image: url("/images/backgrounds/Background_Pink.png") !important; }
 
 body.theme-day {
   --theme-btn-bg: rgba(255, 200, 80, 1);
@@ -299,6 +302,7 @@ body.has-background.theme-pink {
 #pink:checked ~ .slider {
   transform: translateX(89px); 
 }
+
 
 
 
