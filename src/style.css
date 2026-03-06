@@ -14,6 +14,7 @@ body.theme-day {
   --theme-btn-hover: rgba(255, 170, 30, 0.85);
   --theme-btn-color: #3a2a00;
   --theme-accent: #f5a623;
+  background-image: url("/images/backgrounds/Background_Day.jpg")
 }
 
 body.theme-night {
@@ -21,6 +22,7 @@ body.theme-night {
   --theme-btn-hover: rgba(60, 40, 140, 0.85);
   --theme-btn-color: #c8b8ff;
   --theme-accent: #7c5cbf;
+  background-image: url("/images/backgrounds/Background_Day.jpg")
 }
 
 body.theme-pink {
@@ -28,6 +30,7 @@ body.theme-pink {
   --theme-btn-hover: rgba(255, 120, 150, 0.85);
   --theme-btn-color: #5a0020;
   --theme-accent: #e91e8c;
+  background-image: url("/images/backgrounds/Background_Day.jpg")
 }
 
 /* ─── Base ─────────────────────────────────────────────────── */
@@ -296,5 +299,6 @@ body.has-background.theme-pink {
 #pink:checked ~ .slider {
   transform: translateX(89px); 
 }
+
 
 
