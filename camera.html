@@ -12,12 +12,18 @@
 </head>
 <body class="has-background theme-day">
 
-  <div class="theme-buttons">
-    <button id="dayBtn">Day</button>
-    <button id="nightBtn">Night</button>
-    <button id="pinkBtn">Pink</button>
-  </div>
+<div class="theme-toggle">
+  <input type="radio" id="day" name="theme" checked>
+  <label for="day">☀️</label>
 
+  <input type="radio" id="night" name="theme">
+  <label for="night">🌙</label>
+
+  <input type="radio" id="pink" name="theme">
+  <label for="pink">🌸</label>
+
+  <div class="slider"></div>
+</div>
   <!-- Loading overlay -->
   <div id="loading-overlay"></div>
 
