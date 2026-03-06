@@ -22,7 +22,7 @@ body.theme-night {
 }
 
 body.theme-pink {
-  background-image: url("/images/backgrounds/Background_Pink.jpg") !important;
+  background-image: url("/images/backgrounds/Background_Pink.npg") !important;
 }
 body.theme-day {
   --theme-btn-bg: rgba(255, 200, 80, 1);
@@ -314,6 +314,7 @@ body.has-background.theme-pink {
 #pink:checked ~ .slider {
   transform: translateX(89px); 
 }
+
 
 
 
