@@ -6,6 +6,9 @@ import {
 
 type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited";
 type ThemeMode = "day" | "night" | "pink";
+let volume = 0.5;
+let isMuted = false;
+let lastExpression = "";
 
 interface EmotionResult {
   //Any object that's a EmotionResult must have emotion type
@@ -292,6 +295,17 @@ function clearEmotion() {
 function setStatus(msg: string) {
   statusEl.textContent = msg;
 }
+
+//─── Sound ─────────────────────────────────────────────────────────────────────
+
+const sounds: { [key: string]: HTMLAudioElement } = {
+  happy: new Audio('HappyHampter.mp3'),
+  sad: new Audio('SadHampter.mp3'),
+  surprised: new Audio('SurprisedHampter.mp3'),
+  neutral: new Audio('NeutralHampter.mp3'),
+  excited: new Audio('ExcitedHampter.mp3'),
+  angry: new Audio('AngryHampter.mp3')
+};
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 
