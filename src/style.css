@@ -321,3 +321,15 @@ body.has-background.theme-pink {
 
 
 
+
+#camera-overlay {
+  position: absolute;
+  inset: 0; /* fill up the entire video container */
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  border-radius: 3em;
+}
