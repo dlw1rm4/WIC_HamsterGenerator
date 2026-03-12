@@ -11,14 +11,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="has-background theme-day">
-  <div class="theme-buttons">
-    <button id="dayBtn">Day</button>
-    <button id="nightBtn">Night</button>
-    <button id="pinkBtn">Pink</button>
+  <div class="theme-toggle">
+    <input type="radio" name="theme" id="day" value="day">
+    <label for="day">☀️</label>
+
+    <input type="radio" name="theme" id="night" value="night">
+    <label for="night">🌙</label>
+
+    <input type="radio" name="theme" id="pink" value="pink">
+    <label for="pink">🌸</label>
+
+    <div class="slider"></div>
+
+    <script>
+      (function(){
+        const savedThemeCam = localStorage.getItem("theme") || "day";
+        document.body.classList.add(`theme-${savedThemeCam}`);
+        document.body.classList.add('has-background');
+        const savedRadioCam = document.getElementById(savedThemeCam);
+        if (savedRadioCam) savedRadioCam.checked = true;
+      })();
+    </script>
   </div>
-  
-  <div class="slider"></div>
-</div>
   <!-- Loading overlay -->
   <div id="loading-overlay"></div>
 

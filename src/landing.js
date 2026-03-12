@@ -1,6 +1,7 @@
 document.querySelectorAll('input[name="theme"]').forEach((radio) => {
   radio.addEventListener("change", (e) => {
-    const selected = e.target.value;
+    const selected = e.target.value || e.target.id;
+    if (!selected) return;
     setTheme(selected);
   });
 });
@@ -19,8 +20,13 @@ function setTheme(mode) {
   document.body.classList.add("theme-" + mode);
   localStorage.setItem("theme", mode);
 
-  const radio = document.querySelector(`input[value="${mode}"]`);
+  const radio = document.querySelector(`input[value="${mode}"]`) || document.getElementById(mode);
   if (radio) radio.checked = true;
+
+  // sync background position using same mapping as theme.js
+  const BG_POS = { day: '20%', night: '50%', pink: '80%' };
+  document.body.style.setProperty('--bg-x', BG_POS[mode] || '50%');
+  document.body.classList.add('has-background');
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -32,11 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setTheme(prefersDark ? "night" : "day");
   }
-});
-
-  radio.addEventListener("change", (e) => {
-    setTheme(e.target.value);
-  });
 });
 
 function typeLoop() {

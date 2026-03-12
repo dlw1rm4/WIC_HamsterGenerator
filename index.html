@@ -24,7 +24,7 @@
   </head>
   <body class="has-background theme-day">
     <div class="theme-toggle">
-    <input type="radio" name="theme" id="day" checked>
+    <input type="radio" name="theme" id="day" value="day" checked>
     <label for="day">☀️</label>
 
   <input type="radio" name="theme" id="night" value="night">
@@ -34,8 +34,15 @@
   <label for="pink">🌸</label>
 
       <script>
-  const savedTheme = localStorage.getItem("theme") || "day";
-  document.documentElement.className = `theme-${savedTheme}`; 
+  (function(){
+    const BG_POS = { day: '20%', night: '50%', pink: '80%' };
+    const savedTheme = localStorage.getItem("theme") || "day";
+    document.body.classList.add(`theme-${savedTheme}`);
+    document.body.classList.add('has-background');
+    document.body.style.setProperty('--bg-x', BG_POS[savedTheme] || '50%');
+    const savedRadio = document.getElementById(savedTheme);
+    if (savedRadio) savedRadio.checked = true;
+  })();
     </script>
 
     <div class="slider"></div>

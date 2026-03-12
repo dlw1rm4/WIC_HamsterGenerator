@@ -12,10 +12,36 @@
       <button type="button" id="getstarted">Get started!</button>
     </a>
 
-    <div class="theme-buttons">
-      <button id="dayBtn">Day</button>
-      <button id="nightBtn">Night</button>
-      <button id="pinkBtn">Pink</button>
+    <div class="theme-toggle">
+      <input type="radio" name="theme" id="day" value="day">
+      <label for="day">☀️</label>
+
+      <input type="radio" name="theme" id="night" value="night">
+      <label for="night">🌙</label>
+
+      <input type="radio" name="theme" id="pink" value="pink">
+      <label for="pink">🌸</label>
+
+      <script>
+        (function(){
+          const BG_POS = { day: '20%', night: '50%', pink: '80%' };
+          const saved = localStorage.getItem('theme') || 'day';
+          document.body.classList.add('has-background','theme-' + saved);
+          document.body.style.setProperty('--bg-x', BG_POS[saved] || '50%');
+          const radio = document.getElementById(saved);
+          if (radio) radio.checked = true;
+          // listen for changes
+          document.querySelectorAll('input[name="theme"]').forEach(r => r.addEventListener('change', e => {
+            const val = e.target.value || e.target.id;
+            localStorage.setItem('theme', val);
+            document.body.classList.remove('theme-day','theme-night','theme-pink');
+            document.body.classList.add('theme-' + val);
+            document.body.style.setProperty('--bg-x', BG_POS[val] || '50%');
+          }));
+        })();
+      </script>
+
+      <div class="slider"></div>
     </div>
   </body>
 </html>

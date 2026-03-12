@@ -9,27 +9,23 @@
   --theme-btn-color: #ffffff;
 }
 
+:root{
+  --bg-x: 50%;
+}
+
 body {
   background-image: url("/images/backgrounds/Background_Day.jpg");
   background-size: cover;
-  background-position: center;
+  background-position: var(--bg-x, 50%) center;
   background-attachment: fixed;
-  transition: background-image 0.5s ease;
-}
-
-body.theme-night {
-  background-image: url("/images/backgrounds/Background_Night.jpg") !important;
-}
-
-body.theme-pink {
-  background-image: url("/images/backgrounds/Background_Pink.png") !important;
+  transition: background-position 0.5s ease, background-image 0.3s ease;
 }
 body.theme-day {
   --theme-btn-bg: rgba(255, 200, 80, 1);
   --theme-btn-hover: rgba(255, 170, 30, 0.85);
   --theme-btn-color: #3a2a00;
   --theme-accent: #f5a623;
-  background-image: url("/images/backgrounds/Background_Day.jpg")
+  background-image: url("/images/backgrounds/Background_Day.jpg");
 }
 
 body.theme-night {
@@ -37,7 +33,7 @@ body.theme-night {
   --theme-btn-hover: rgba(60, 40, 140, 0.85);
   --theme-btn-color: #c8b8ff;
   --theme-accent: #7c5cbf;
-  background-image: url("/images/backgrounds/Background_Day.jpg")
+  background-image: url("/images/backgrounds/Background_Night.jpg");
 }
 
 body.theme-pink {
@@ -45,7 +41,7 @@ body.theme-pink {
   --theme-btn-hover: rgba(255, 120, 150, 0.85);
   --theme-btn-color: #5a0020;
   --theme-accent: #e91e8c;
-  background-image: url("/images/backgrounds/Background_Day.jpg")
+  background-image: url("/images/backgrounds/Background_Pink.png");
 }
 
 /* ─── Base ─────────────────────────────────────────────────── */
@@ -87,7 +83,7 @@ body {
 
 body.has-background {
   background-size: cover;
-  background-position: center;
+  background-position: var(--bg-x, 50%) center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
@@ -253,15 +249,16 @@ body.has-background.theme-pink {
   right: clamp(15px, 3vw, 30px);
   display: flex;
   align-items: center;
-  width: 135px;
-  height: 46px;
-  border-radius: 50px;
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 5px;
+  width: 150px; /* a bit wider for spacious icons */
+  height: 50px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 5px 6px;
   z-index: 999;
   box-sizing: border-box; 
+  box-shadow: 0 4px 18px rgba(0,0,0,0.12);
 }
 
 .theme-toggle input {
@@ -277,7 +274,12 @@ body.has-background.theme-pink {
   font-size: 20px;
   cursor: pointer;
   z-index: 2;
-  transition: opacity 0.3s;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.theme-toggle label:hover {
+  opacity: 0.8;
+  color: #000;
 }
 
 .theme-toggle input:checked + label {
@@ -290,29 +292,27 @@ body.has-background.theme-pink {
 
 .slider {
   position: absolute;
-  width: 36px; 
-  height: 36px;
+  width: 32px;
+  height: 32px;
+  top: 6px;
+  /* start position centered under first icon using percent calc */
+  left: calc(16.666% - 16px);
   border-radius: 50%;
-  background: white;
-  left: 5px; 
-  top: 5px;
-  transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); 
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  z-index: 1;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  transition: left 0.3s cubic-bezier(0.22,0.9,0.3,1);
 }
 
-/* --- 修复后的移动逻辑，每个块都有完整的 {} --- */
-
 #day:checked ~ .slider {
-  transform: translateX(0px);
+  left: calc(16.666% - 16px);
 }
 
 #night:checked ~ .slider {
-  transform: translateX(44.5px); 
+  left: calc(50% - 16px);
 }
 
 #pink:checked ~ .slider {
-  transform: translateX(89px); 
+  left: calc(83.333% - 16px);
 }
 
 
