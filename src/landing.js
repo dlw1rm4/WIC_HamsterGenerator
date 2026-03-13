@@ -64,3 +64,22 @@ function typeLoop() {
 
 setTheme(saved || "day");
 typeLoop();
+
+// Info button functionality
+document.addEventListener("DOMContentLoaded", () => {
+  const infoBtn = document.getElementById("info");
+  const infoCard = document.getElementById("info-card");
+  const closeBtn = document.getElementById("close-btn");
+
+  if (infoBtn && infoCard) {
+    infoBtn.addEventListener("click", () => {
+      infoCard.classList.remove("hidden");
+    });
+  }
+
+  if (closeBtn && infoCard) {
+    closeBtn.addEventListener("click", () => {
+      infoCard.classList.add("hidden");
+    });
+  }
+});
