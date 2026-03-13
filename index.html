@@ -70,23 +70,6 @@
       </div>
     </div>
 
-    <script src="/src/landing.js" defer></script>
-    <script type="module" src="/src/camera.ts"></script>
-    <script>
-      const infoBtn = document.getElementById("info");
-      const closeBtn = document.getElementById("close-btn");
-      const infoCard = document.getElementById("info-card");
-
-      infoBtn.addEventListener("click", () =>
-        infoCard.classList.remove("hidden"),
-      );
-      closeBtn.addEventListener("click", () =>
-        infoCard.classList.add("hidden"),
-      );
-      infoCard.addEventListener("click", (e) => {
-        if (e.target === infoCard) infoCard.classList.add("hidden");
-      });
-    </script>
-    <script src="/src/theme.js"></script>
+  <script type="module" src="/src/main-landing.js"></script>
   </body>
 </html>
