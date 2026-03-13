@@ -23,6 +23,31 @@
     </style>
   </head>
   <body class="has-background theme-day">
+    <div class="theme-toggle">
+    <input type="radio" name="theme" id="day" value="day" checked>
+    <label for="day">☀️</label>
+
+  <input type="radio" name="theme" id="night" value="night">
+  <label for="night">🌙</label>
+
+  <input type="radio" name="theme" id="pink" value="pink">
+  <label for="pink">🌸</label>
+
+      <script>
+  (function(){
+    const BG_POS = { day: '20%', night: '50%', pink: '80%' };
+    const savedTheme = localStorage.getItem("theme") || "day";
+    document.body.classList.add(`theme-${savedTheme}`);
+    document.body.classList.add('has-background');
+    document.body.style.setProperty('--bg-x', BG_POS[savedTheme] || '50%');
+    const savedRadio = document.getElementById(savedTheme);
+    if (savedRadio) savedRadio.checked = true;
+  })();
+    </script>
+
+    <div class="slider"></div>
+  </div>
+
     <div id="landing-content">
       <div id="dynamic-text"></div>
       <button type="button" id="info">Info</button>
@@ -30,17 +55,6 @@
         <button type="button" id="getstarted">Get started!</button>
       </a>
     </div>
-
-<div class="theme-toggle">
-  <input type="radio" name="theme" id="day" value="day">
-  <label for="day">Day</label>
-
-  <input type="radio" name="theme" id="night" value="night">
-  <label for="night">Night</label>
-
-  <input type="radio" name="theme" id="pink" value="pink">
-  <label for="pink">Pink</label>
-</div>
 
     <div id="info-card" class="hidden">
       <div class="card-content">
@@ -73,5 +87,6 @@
         if (e.target === infoCard) infoCard.classList.add("hidden");
       });
     </script>
+    <script src="/src/theme.js"></script>
   </body>
 </html>
