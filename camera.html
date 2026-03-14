@@ -28,6 +28,38 @@
     />
   </head>
   <body class="has-background theme-day">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamster Vision</title>
+  <link rel="stylesheet" href="./src/style.css" />
+  <link rel="icon" type="image/x-icon" href="./images/favicon.ico">  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="has-background theme-day">
+  <div class="theme-buttons">
+    <button id="dayBtn">Day</button>
+    <button id="nightBtn">Night</button>
+    <button id="pinkBtn">Pink</button>
+  </div>
+  
+  <div class="slider"></div>
+</div>
+
+<!-- Expression sound menu -->
+<div id="sound-menu" style="position: fixed; bottom: 20px; left: 20px; background: rgb(0,0,0); color: white; padding: 15px; border-radius: 10px; z-index: 100;">
+  <div style="margin-bottom: 10px;">
+      <label>Volume: </label>
+      <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0.5">
+  </div>
+  <button id="mute-btn" style="width: 100%; cursor: pointer;">🔊 Mute</button>
+</div>
+
+
+  <div class="theme-toggle">
+  <input type="radio" name="theme" id="day" value="day" checked>
+  <label for="day">☀️</label>
     <div class="theme-toggle">
       <input type="radio" name="theme" id="day" value="day" checked />
       <label for="day">☀️</label>

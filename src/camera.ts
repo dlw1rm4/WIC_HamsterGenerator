@@ -1,6 +1,19 @@
 import "./style.css";
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
+let volume = 0.5;
+let isMuted = false;
+//─── Sound ─────────────────────────────────────────────────────────────────────
+
+const soundLibrary: { [key: string]: HTMLAudioElement } = {
+  happy: new Audio('/sounds/HappyHampter.mp3'),
+  sad: new Audio('/sounds/SadHampter.mp3'),
+  surprised: new Audio('/sounds/SurprisedHampter.mp3'),
+  neutral: new Audio('/sounds/NeutralHampter.mp3'),
+  excited: new Audio('/sounds/ExcitedHampter.mp3'),
+  angry: new Audio('/sounds/AngryHampter.mp3')
+};
+
 type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited";
 
 interface EmotionResult {
@@ -325,6 +338,14 @@ function updateUI(emotion: Emotion) {
   emotionNameEl.className = `emotion-name emotion-${emotion}`;
   placeholder.classList.add("hidden");
 
+  // --- SOUND TRIGGER ---
+  if (!isMuted && soundLibrary[emotion]) {
+      const sfx = soundLibrary[emotion];
+      sfx.currentTime = 0; // Rewind to start
+      sfx.volume = volume; // Use the slider volume
+      sfx.play().catch(() => console.log("Click the screen once to enable audio"));
+  }
+
   // Highlight active pill
   pills.forEach((p) => {
     p.classList.toggle("active", p.dataset.emotion === emotion);
@@ -342,6 +363,23 @@ function clearEmotion() {
 
 function setStatus(msg: string) {
   statusEl.textContent = msg;
+}
+
+// --- Sound Menu Listeners ---
+const volumeSlider = document.getElementById("volume-control") as HTMLInputElement;
+const muteBtn = document.getElementById("mute-btn") as HTMLButtonElement;
+
+if (volumeSlider) {
+    volumeSlider.addEventListener("input", (e) => {
+        volume = parseFloat((e.target as HTMLInputElement).value);
+    });
+}
+
+if (muteBtn) {
+    muteBtn.addEventListener("click", () => {
+        isMuted = !isMuted;
+        muteBtn.innerText = isMuted ? "🔇 Unmute" : "🔊 Mute";
+    });
 }
 
 init();
