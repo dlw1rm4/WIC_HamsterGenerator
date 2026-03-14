@@ -4,11 +4,23 @@ import {
   FilesetResolver,
 } from "@mediapipe/tasks-vision";
 
-type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited";
-type ThemeMode = "day" | "night" | "pink";
 let volume = 0.5;
 let isMuted = false;
 let lastExpression = "";
+
+//─── Sound ─────────────────────────────────────────────────────────────────────
+
+const soundLibrary: { [key: string]: HTMLAudioElement } = {
+  happy: new Audio('/sounds/HappyHampter.mp3'),
+  sad: new Audio('/sounds/SadHampter.mp3'),
+  surprised: new Audio('/sounds/SurprisedHampter.mp3'),
+  neutral: new Audio('/sounds/NeutralHampter.mp3'),
+  excited: new Audio('/sounds/ExcitedHampter.mp3'),
+  angry: new Audio('/sounds/AngryHampter.mp3')
+};
+
+type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited";
+type ThemeMode = "day" | "night" | "pink";
 
 interface EmotionResult {
   //Any object that's a EmotionResult must have emotion type
@@ -98,7 +110,7 @@ function classifyEmotion(
   for (const key of Object.keys(scores) as Emotion[]) {
     if (scores[key] < 0){
       scores[key] = 0;
-    } 
+    }
   }
 
   // Find winner
@@ -276,6 +288,14 @@ function updateUI(emotion: Emotion) {
     expressionImg.classList.remove("pop-in");
   }, { once: true });
 
+  // --- SOUND TRIGGER ---
+  if (!isMuted && soundLibrary[emotion]) {
+      const sfx = soundLibrary[emotion];
+      sfx.currentTime = 0; // Rewind to start
+      sfx.volume = volume; // Use the slider volume
+      sfx.play().catch(() => console.log("Click the screen once to enable audio"));
+  }
+
   // Highlight active pill
   pills.forEach(p => {
     p.classList.toggle("active", p.dataset.emotion === emotion);
@@ -296,18 +316,24 @@ function setStatus(msg: string) {
   statusEl.textContent = msg;
 }
 
-//─── Sound ─────────────────────────────────────────────────────────────────────
-
-const sounds: { [key: string]: HTMLAudioElement } = {
-  happy: new Audio('HappyHampter.mp3'),
-  sad: new Audio('SadHampter.mp3'),
-  surprised: new Audio('SurprisedHampter.mp3'),
-  neutral: new Audio('NeutralHampter.mp3'),
-  excited: new Audio('ExcitedHampter.mp3'),
-  angry: new Audio('AngryHampter.mp3')
-};
-
 // ─── Boot ─────────────────────────────────────────────────────────────────────
+
+// --- Sound Menu Listeners ---
+const volumeSlider = document.getElementById("volume-control") as HTMLInputElement;
+const muteBtn = document.getElementById("mute-btn") as HTMLButtonElement;
+
+if (volumeSlider) {
+    volumeSlider.addEventListener("input", (e) => {
+        volume = parseFloat((e.target as HTMLInputElement).value);
+    });
+}
+
+if (muteBtn) {
+    muteBtn.addEventListener("click", () => {
+        isMuted = !isMuted;
+        muteBtn.innerText = isMuted ? "🔇 Unmute" : "🔊 Mute";
+    });
+}
 
 // ─── Theme buttons ─────────────────────────────────────────
 
