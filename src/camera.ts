@@ -3,8 +3,6 @@ import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 let volume = 0.5;
 let isMuted = false;
-type ThemeMode = "day" | "night" | "pink";
-
 //─── Sound ─────────────────────────────────────────────────────────────────────
 
 const soundLibrary: { [key: string]: HTMLAudioElement } = {
@@ -367,8 +365,6 @@ function setStatus(msg: string) {
   statusEl.textContent = msg;
 }
 
-// ─── Boot ─────────────────────────────────────────────────────────────────────
-
 // --- Sound Menu Listeners ---
 const volumeSlider = document.getElementById("volume-control") as HTMLInputElement;
 const muteBtn = document.getElementById("mute-btn") as HTMLButtonElement;
@@ -386,31 +382,4 @@ if (muteBtn) {
     });
 }
 
-function setTheme(mode: ThemeMode) {
-  const body = document.body;
-  body.classList.remove("theme-day", "theme-night", "theme-pink");
-  body.classList.add(`theme-${mode}`);
-  localStorage.setItem("theme", mode);
-}
-
-function restoreTheme() {
-  const saved = localStorage.getItem("theme") as ThemeMode | null;
-  if (saved) {
-      setTheme(saved);
-  } else {
-      setTheme("day");
-  }
-}
-
-// ─── Theme buttons ─────────────────────────────────────────
-
-const dayBtn = document.getElementById("dayBtn");
-const nightBtn = document.getElementById("nightBtn");
-const pinkBtn = document.getElementById("pinkBtn");
-
-dayBtn?.addEventListener("click", () => setTheme("day"));
-nightBtn?.addEventListener("click", () => setTheme("night"));
-pinkBtn?.addEventListener("click", () => setTheme("pink"));
-
-restoreTheme();
 init();
