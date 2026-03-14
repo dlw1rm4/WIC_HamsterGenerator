@@ -3,7 +3,7 @@ import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 let volume = 0.5;
 let isMuted = false;
-let lastExpression = "";
+type ThemeMode = "day" | "night" | "pink";
 
 //─── Sound ─────────────────────────────────────────────────────────────────────
 
@@ -17,7 +17,6 @@ const soundLibrary: { [key: string]: HTMLAudioElement } = {
 };
 
 type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited";
-type ThemeMode = "day" | "night" | "pink";
 
 interface EmotionResult {
   //Any object that's a EmotionResult must have emotion type
@@ -157,25 +156,6 @@ let faceLandmarker: FaceLandmarker;
 let webcamRunning = false;
 let lastVideoTime = -1;
 let currentEmotion: Emotion | null = null;
-
-function setTheme(mode: ThemeMode) {
-  const body = document.body;
-
-  body.classList.remove("theme-day", "theme-night", "theme-pink");
-
-  body.classList.add(`theme-${mode}`);
-
-  localStorage.setItem("theme", mode);
-}
-
-function restoreTheme() {
-  const saved = localStorage.getItem("theme") as ThemeMode | null;
-  if (saved) {
-    setTheme(saved);
-  } else {
-    setTheme("day"); // default to day if nothing saved
-  }
-}
 
 // Smoothing: keep a short history of emotions and pick the most frequent
 const HISTORY_SIZE = 8;
@@ -404,6 +384,22 @@ if (muteBtn) {
         isMuted = !isMuted;
         muteBtn.innerText = isMuted ? "🔇 Unmute" : "🔊 Mute";
     });
+}
+
+function setTheme(mode: ThemeMode) {
+  const body = document.body;
+  body.classList.remove("theme-day", "theme-night", "theme-pink");
+  body.classList.add(`theme-${mode}`);
+  localStorage.setItem("theme", mode);
+}
+
+function restoreTheme() {
+  const saved = localStorage.getItem("theme") as ThemeMode | null;
+  if (saved) {
+      setTheme(saved);
+  } else {
+      setTheme("day");
+  }
 }
 
 // ─── Theme buttons ─────────────────────────────────────────
