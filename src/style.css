@@ -212,28 +212,6 @@ body.has-background.theme-pink {
   transition: filter 0.2s ease;
 }
 
-/* ─── Webcam ────────────────────────────────────────────────── */
-#video-container {
-  position: relative;
-  width: fit-content;
-  margin: 10vh auto 0;
-}
-
-#webcam {
-  width: 60vw;
-  height: 45vw;
-  border-radius: 3em;
-  border: 0.8em solid var(--theme-btn-bg);
-}
-
-#expression-img {
-  position: absolute;
-  pointer-events: none;
-  transform: translate(-50%, -100%);
-  width: 80px;
-  height: 80px;
-}
-
 /* ─── Theme toggle ──────────────────────────────────────────── */
 .theme-toggle {
   position: fixed;
@@ -307,6 +285,16 @@ body.has-background.theme-pink {
   left: calc(100% - 49px);
 }
 
+/* ─── Camera page layout ────────────────────────────────────── */
+#camera-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5vh;
+  padding: 2vh 2vw;
+  width: 100%;
+}
+
 /* ─── Camera overlay ────────────────────────────────────────── */
 #camera-overlay {
   position: absolute;
@@ -317,5 +305,67 @@ body.has-background.theme-pink {
   justify-content: center;
   align-items: center;
   font-size: 1.2em;
-  border-radius: 3em;
+}
+
+/* ─── Webcam ────────────────────────────────────────────────── */
+#video-container {
+  position: relative;
+  width: min(70vw, 85vh);
+  aspect-ratio: 4/3;
+  border-radius: 2em;
+  border: 0.5em solid var(--theme-btn-bg);
+  overflow: hidden;
+}
+
+#webcam {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+#expression-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ─── Controls row below video ──────────────────────────────── */
+#camera-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8em;
+}
+
+/* ─── Emotion name ───────────────────────────────────────────── */
+#emotion-name {
+  font-family: var(--font-primary);
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--theme-btn-color);
+  background: var(--theme-btn-bg);
+  padding: 0.3em 1em;
+  border-radius: 2em;
+  min-width: 10ch;
+  text-align: center;
+  text-transform: capitalize;
+  letter-spacing: 0.05em;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ─── Placeholder text ───────────────────────────────────────── */
+#image-placeholder {
+  font-size: clamp(0.85rem, 1.5vw, 1.1rem);
+  color: var(--theme-btn-color);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* ─── Hide old status ────────────────────────────────────────── */
+#status {
+  display: none;
 }

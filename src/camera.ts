@@ -9,7 +9,7 @@ interface EmotionResult {
   emotion: Emotion;
 }
 
-// ─── Emotion configuration to its image ───────────────────────────────────────────────────────────
+// ─── Preload Emotion images to paste onto canvas ───────────────────────────────────────────────────────────
 
 const EMOTION_IMAGES: Record<Emotion, string> = {
   happy: "./images/expressions/happy.jpeg",
@@ -19,6 +19,13 @@ const EMOTION_IMAGES: Record<Emotion, string> = {
   neutral: "./images/expressions/neutral.jpeg",
   excited: "./images/expressions/excited.jpeg",
 };
+
+const EMOTION_IMAGE_ELEMENTS: Partial<Record<Emotion, HTMLImageElement>> = {};
+for (const [emotion, src] of Object.entries(EMOTION_IMAGES) as [Emotion, string][]) {
+  const img = new Image();
+  img.src = src;
+  EMOTION_IMAGE_ELEMENTS[emotion] = img;
+}
 
 // ─── Blend shape classifier ───────────────────────────────────────────────────
 // MediaPipe outputs 52 "blend shape" values (0–1) describing facial muscle positions.
@@ -123,12 +130,11 @@ const webcamButton = document.getElementById(
 ) as HTMLButtonElement;
 const statusEl = document.getElementById("status")!;
 const emotionNameEl = document.getElementById("emotion-name")!;
-const expressionImg = document.getElementById(
-  "expression-img",
-) as HTMLImageElement;
+const expressionCanvas = document.getElementById("expression-canvas") as HTMLCanvasElement;
+const ctx = expressionCanvas.getContext("2d")!; // CanvasRenderingContext2D object representing a two-dimensional rendering context
 const placeholder = document.getElementById("image-placeholder")!;
-const caption = document.getElementById("expression-caption")!;
 const pills = document.querySelectorAll<HTMLElement>(".pill");
+
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
@@ -159,6 +165,23 @@ function restoreTheme() {
 // Smoothing: keep a short history of emotions and pick the most frequent
 const HISTORY_SIZE = 8;
 const emotionHistory: Emotion[] = [];
+
+function drawImgCanvas(normX: number, normY: number) { //To balance the img, we normalize the x and y coordinates to center the image on the live cam
+  expressionCanvas.width = video.videoWidth;
+  expressionCanvas.height = video.videoHeight;
+  ctx.clearRect(0, 0, expressionCanvas.width, expressionCanvas.height); //Transparent img frame (consistent size)
+
+  // Test cases
+  if (!currentEmotion) return;
+  const img = EMOTION_IMAGE_ELEMENTS[currentEmotion];
+  if (!img?.complete) return;
+
+  const px = normX * expressionCanvas.width;
+  const py = normY * expressionCanvas.height;
+  const size = expressionCanvas.width * 0.15;
+
+  ctx.drawImage(img, px - (size / 2), py - size, size, size);
+}
 
 async function requestCamera() {
   // Immediately request camera access
@@ -266,12 +289,17 @@ async function predict() {
     const result = faceLandmarker.detectForVideo(video, nowMs);
 
     if (result.faceLandmarks?.length) {
+      const lm = result.faceLandmarks[0]; 
+
       if (result.faceBlendshapes?.[0]?.categories) {
         const { emotion } = classifyEmotion(
           result.faceBlendshapes[0].categories,
         );
         updateEmotionSmoothed(emotion);
       }
+
+      drawImgCanvas(lm[10].x, lm[10].y); //Upper forehead x and y coordinates
+      
     } else {
       setStatus("No face detected...");
       clearEmotion();
@@ -315,20 +343,7 @@ function updateUI(emotion: Emotion) {
   // Emotion name
   emotionNameEl.textContent = emotion;
   emotionNameEl.className = `emotion-name emotion-${emotion}`;
-
-  // Image
-  expressionImg.src = EMOTION_IMAGES[emotion];
-  expressionImg.classList.remove("hidden");
-  expressionImg.classList.add("pop-in");
   placeholder.classList.add("hidden");
-  // Remove animation class after it plays so it can re-trigger
-  expressionImg.addEventListener(
-    "animationend",
-    () => {
-      expressionImg.classList.remove("pop-in");
-    },
-    { once: true },
-  );
 
   // Highlight active pill
   pills.forEach((p) => {
@@ -338,19 +353,16 @@ function updateUI(emotion: Emotion) {
 
 function clearEmotion() {
   currentEmotion = null;
-  emotionNameEl.textContent = "—";
+  emotionNameEl.textContent = "";
   emotionNameEl.className = "emotion-name";
-  expressionImg.classList.add("hidden");
+  ctx.clearRect(0, 0, expressionCanvas.width, expressionCanvas.height);
   placeholder.classList.remove("hidden");
-  caption.textContent = "";
   pills.forEach((p) => p.classList.remove("active"));
 }
 
 function setStatus(msg: string) {
   statusEl.textContent = msg;
 }
-
-// ─── Boot ─────────────────────────────────────────────────────────────────────
 
 // ─── Theme buttons ─────────────────────────────────────────
 
@@ -363,5 +375,4 @@ nightBtn?.addEventListener("click", () => setTheme("night"));
 pinkBtn?.addEventListener("click", () => setTheme("pink"));
 
 restoreTheme();
-
 init();
