@@ -2,7 +2,6 @@ import "./style.css";
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited";
-type ThemeMode = "day" | "night" | "pink";
 
 interface EmotionResult {
   //Any object that's a EmotionResult must have emotion type
