@@ -1,4 +1,6 @@
 import "./style.css";
+import "./theme"
+import "./landing";
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 let volume = 0.5;
