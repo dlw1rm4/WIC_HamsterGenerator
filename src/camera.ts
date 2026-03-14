@@ -143,25 +143,6 @@ let webcamRunning = false;
 let lastVideoTime = -1;
 let currentEmotion: Emotion | null = null;
 
-function setTheme(mode: ThemeMode) {
-  const body = document.body;
-
-  body.classList.remove("theme-day", "theme-night", "theme-pink");
-
-  body.classList.add(`theme-${mode}`);
-
-  localStorage.setItem("theme", mode);
-}
-
-function restoreTheme() {
-  const saved = localStorage.getItem("theme") as ThemeMode | null;
-  if (saved) {
-    setTheme(saved);
-  } else {
-    setTheme("day"); // default to day if nothing saved
-  }
-}
-
 // Smoothing: keep a short history of emotions and pick the most frequent
 const HISTORY_SIZE = 8;
 const emotionHistory: Emotion[] = [];
@@ -364,15 +345,4 @@ function setStatus(msg: string) {
   statusEl.textContent = msg;
 }
 
-// ─── Theme buttons ─────────────────────────────────────────
-
-const dayBtn = document.getElementById("dayBtn");
-const nightBtn = document.getElementById("nightBtn");
-const pinkBtn = document.getElementById("pinkBtn");
-
-dayBtn?.addEventListener("click", () => setTheme("day"));
-nightBtn?.addEventListener("click", () => setTheme("night"));
-pinkBtn?.addEventListener("click", () => setTheme("pink"));
-
-restoreTheme();
 init();
