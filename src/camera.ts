@@ -1,8 +1,5 @@
 import "./style.css";
-import {
-  FaceLandmarker,
-  FilesetResolver,
-} from "@mediapipe/tasks-vision";
+import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 let volume = 0.5;
 let isMuted = false;
@@ -85,7 +82,10 @@ function classifyEmotion(
     excited: smile * 1.0 + eyeWide * 0.8 + browUp * 0.6 + jawOpen * 0.4,
     surprised: jawOpen * 1.4 + eyeWide * 1.0 + browUp * 0.6 + browInner * 0.4,
     sad:
-      frown * 1.4 + browInner * 0.7 + (1.0 - dimple) * 0.2 + (1.0 - pucker) * 0.2,
+      frown * 1.4 +
+      browInner * 0.7 +
+      (1.0 - dimple) * 0.2 +
+      (1.0 - pucker) * 0.2,
     angry:
       eyeSquint * 1.2 +
       mouthShrug * 1.0 +
@@ -108,7 +108,7 @@ function classifyEmotion(
 
   // Clamp negatives to 0
   for (const key of Object.keys(scores) as Emotion[]) {
-    if (scores[key] < 0){
+    if (scores[key] < 0) {
       scores[key] = 0;
     }
   }
@@ -116,7 +116,10 @@ function classifyEmotion(
   // Find winner
   let best: Emotion = "neutral";
   let bestScore = -1;
-  for (const [emotion, score] of Object.entries(scores) as [Emotion, number][]) {
+  for (const [emotion, score] of Object.entries(scores) as [
+    Emotion,
+    number,
+  ][]) {
     if (score > bestScore) {
       bestScore = score;
       best = emotion;
@@ -128,15 +131,19 @@ function classifyEmotion(
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 
-const video           = document.getElementById("webcam") as HTMLVideoElement;
-const webcamButton    = document.getElementById("webcamButton") as HTMLButtonElement;
-const statusEl        = document.getElementById("status")!;
-const emotionNameEl   = document.getElementById("emotion-name")!;
-const expressionImg   = document.getElementById("expression-img") as HTMLImageElement;
-const placeholder     = document.getElementById("image-placeholder")!;
-const caption         = document.getElementById("expression-caption")!;
-const loadingOverlay  = document.getElementById("loading-overlay")!;
-const pills           = document.querySelectorAll<HTMLElement>(".pill");
+const video = document.getElementById("webcam") as HTMLVideoElement;
+const cameraOverlay = document.getElementById("camera-overlay")!;
+const webcamButton = document.getElementById(
+  "webcamButton",
+) as HTMLButtonElement;
+const statusEl = document.getElementById("status")!;
+const emotionNameEl = document.getElementById("emotion-name")!;
+const expressionImg = document.getElementById(
+  "expression-img",
+) as HTMLImageElement;
+const placeholder = document.getElementById("image-placeholder")!;
+const caption = document.getElementById("expression-caption")!;
+const pills = document.querySelectorAll<HTMLElement>(".pill");
 
 // ─── State ────────────────────────────────────────────────────────────────────
 
@@ -168,15 +175,45 @@ function restoreTheme() {
 const HISTORY_SIZE = 8;
 const emotionHistory: Emotion[] = [];
 
+async function requestCamera() {
+  // Immediately request camera access
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+    video.addEventListener(
+      "loadeddata",
+      () => {
+        cameraOverlay.classList.add("hidden");
+        setStatus("Camera's ready! Hit Start!");
+        webcamButton.disabled = false;
+      },
+      { once: true },
+    );
+  } catch (err: any) {
+    if (err.name === "NotAllowedError") {
+      cameraOverlay.textContent = "Camera access denied.";
+    } else if (err.name === "NotFoundError") {
+      cameraOverlay.textContent = "No camera found.";
+    } else {
+      cameraOverlay.textContent = "Camera error.";
+    }
+    console.error(err);
+  }
+}
+
 // ─── Init MediaPipe ───────────────────────────────────────────────────────────
 
 async function init() {
+  webcamButton.disabled = true; // keep start btn disabled until camera is ready
+  cameraOverlay.textContent = "Checking for camera access...";
+
   const filesetResolver = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm",
   );
   faceLandmarker = await FaceLandmarker.createFromOptions(filesetResolver, {
     baseOptions: {
-      modelAssetPath: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+      modelAssetPath:
+        "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
       delegate: "GPU",
     },
     outputFaceBlendshapes: true,
@@ -184,9 +221,7 @@ async function init() {
     numFaces: 1,
   });
 
-  loadingOverlay.classList.add("hidden");
-  webcamButton.disabled = false;
-  setStatus("Camera's ready! Hit Start!");
+  await requestCamera();
 }
 
 // ─── Webcam ───────────────────────────────────────────────────────────────────
@@ -199,9 +234,10 @@ webcamButton.addEventListener("click", async () => {
     webcamButton.querySelector(".btn-text")!.textContent = "Start Camera";
     webcamButton.classList.remove("active");
     const tracks = (video.srcObject as MediaStream)?.getTracks();
-    tracks?.forEach(t => t.stop());
+    tracks?.forEach((t) => t.stop()); // Safety measure in case of multiple tracks
     video.srcObject = null;
-    setStatus("Camera stopped!");
+    cameraOverlay.classList.remove("hidden");
+    cameraOverlay.textContent = "Camera stopped. Click Start to try again.";
     clearEmotion();
     return;
   }
@@ -209,14 +245,26 @@ webcamButton.addEventListener("click", async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     video.srcObject = stream;
-    video.addEventListener("loadeddata", () => {
-      webcamRunning = true;
-      webcamButton.querySelector(".btn-text")!.textContent = "Stop Camera";
-      webcamButton.classList.add("active");
-      requestAnimationFrame(predict);
-    }, { once: true });
-  } catch (err) {
-    setStatus("Camera access denied.");
+    video.addEventListener(
+      "loadeddata",
+      () => {
+        webcamRunning = true;
+        cameraOverlay.classList.add("hidden");
+        webcamButton.querySelector(".btn-text")!.textContent = "Stop Camera";
+        webcamButton.classList.add("active");
+        requestAnimationFrame(predict);
+      },
+      { once: true },
+    );
+  } catch (err: any) {
+    cameraOverlay.classList.remove("hidden");
+    if (err.name === "NotAllowedError") {
+      cameraOverlay.textContent = "Camera access denied.";
+    } else if (err.name === "NotFoundError") {
+      cameraOverlay.textContent = "No camera found.";
+    } else {
+      cameraOverlay.textContent = "Camera error.";
+    }
     console.error(err);
   }
 });
@@ -234,7 +282,9 @@ async function predict() {
 
     if (result.faceLandmarks?.length) {
       if (result.faceBlendshapes?.[0]?.categories) {
-        const { emotion } = classifyEmotion(result.faceBlendshapes[0].categories);
+        const { emotion } = classifyEmotion(
+          result.faceBlendshapes[0].categories,
+        );
         updateEmotionSmoothed(emotion);
       }
     } else {
@@ -260,7 +310,10 @@ function updateEmotionSmoothed(emotion: Emotion) {
   let dominant: Emotion = emotion;
   let max = 0;
   for (const [e, count] of Object.entries(freq) as [Emotion, number][]) {
-    if (count > max) { max = count; dominant = e; }
+    if (count > max) {
+      max = count;
+      dominant = e;
+    }
   }
 
   updateUI(dominant);
@@ -284,9 +337,13 @@ function updateUI(emotion: Emotion) {
   expressionImg.classList.add("pop-in");
   placeholder.classList.add("hidden");
   // Remove animation class after it plays so it can re-trigger
-  expressionImg.addEventListener("animationend", () => {
-    expressionImg.classList.remove("pop-in");
-  }, { once: true });
+  expressionImg.addEventListener(
+    "animationend",
+    () => {
+      expressionImg.classList.remove("pop-in");
+    },
+    { once: true },
+  );
 
   // --- SOUND TRIGGER ---
   if (!isMuted && soundLibrary[emotion]) {
@@ -297,7 +354,7 @@ function updateUI(emotion: Emotion) {
   }
 
   // Highlight active pill
-  pills.forEach(p => {
+  pills.forEach((p) => {
     p.classList.toggle("active", p.dataset.emotion === emotion);
   });
 }
@@ -309,7 +366,7 @@ function clearEmotion() {
   expressionImg.classList.add("hidden");
   placeholder.classList.remove("hidden");
   caption.textContent = "";
-  pills.forEach(p => p.classList.remove("active"));
+  pills.forEach((p) => p.classList.remove("active"));
 }
 
 function setStatus(msg: string) {

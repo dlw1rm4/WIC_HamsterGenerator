@@ -1,12 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hamster Vision</title>
-  <link rel="stylesheet" href="/src/style.css" />
-  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="./src/style.css" />
+  <link rel="icon" type="image/x-icon" href="./images/favicon.ico">  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -30,6 +29,28 @@
 </div>
 
 
+  <div class="theme-toggle">
+    <input type="radio" name="theme" id="day" value="day">
+    <label for="day">☀️</label>
+
+    <input type="radio" name="theme" id="night" value="night">
+    <label for="night">🌙</label>
+
+    <input type="radio" name="theme" id="pink" value="pink">
+    <label for="pink">🌸</label>
+
+    <div class="slider"></div>
+
+    <script>
+      (function(){
+        const savedThemeCam = localStorage.getItem("theme") || "day";
+        document.body.classList.add(`theme-${savedThemeCam}`);
+        document.body.classList.add('has-background');
+        const savedRadioCam = document.getElementById(savedThemeCam);
+        if (savedRadioCam) savedRadioCam.checked = true;
+      })();
+    </script>
+  </div>
   <!-- Loading overlay -->
   <div id="loading-overlay"></div>
 
@@ -54,8 +75,6 @@
   <div id="image-placeholder">Waiting for face...</div>
   <div id="expression-caption"></div>
 
-  <script src="/src/landing.js" defer></script>
-  <script type="module" src="/src/camera.ts"></script>
-  <script src="/src/theme.js"></script>
+  <script type="module" src="/src/main-camera.js"></script>
 </body>
 </html>

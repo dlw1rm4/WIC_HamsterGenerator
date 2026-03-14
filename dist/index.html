@@ -2,14 +2,74 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
     <title>Hamster Vision</title>
-    <script type="module" crossorigin src="/assets/camera-Dn-xZWtv.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/camera-tn0RQdqM.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .hidden {
+        display: none !important;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/theme-TInIrjwb.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/theme-BlcIVzeL.css">
   </head>
-  <body>
-    <button type="button" id="info">Info</button>
-    <a href="/camera.html"><button type="button" id="getstarted">Get started!</button></a>
+  <body class="has-background theme-day">
+    <div class="theme-toggle">
+    <input type="radio" name="theme" id="day" value="day" checked>
+    <label for="day">☀️</label>
+
+  <input type="radio" name="theme" id="night" value="night">
+  <label for="night">🌙</label>
+
+  <input type="radio" name="theme" id="pink" value="pink">
+  <label for="pink">🌸</label>
+
+      <script>
+  (function(){
+    const BG_POS = { day: '20%', night: '50%', pink: '80%' };
+    const savedTheme = localStorage.getItem("theme") || "day";
+    document.body.classList.add(`theme-${savedTheme}`);
+    document.body.classList.add('has-background');
+    document.body.style.setProperty('--bg-x', BG_POS[savedTheme] || '50%');
+    const savedRadio = document.getElementById(savedTheme);
+    if (savedRadio) savedRadio.checked = true;
+  })();
+    </script>
+
+    <div class="slider"></div>
+  </div>
+
+    <div id="landing-content">
+      <div id="dynamic-text"></div>
+      <button type="button" id="info">Info</button>
+      <a href="/camera.html">
+        <button type="button" id="getstarted">Get started!</button>
+      </a>
+    </div>
+
+    <div id="info-card" class="hidden">
+      <div class="card-content">
+        <h2>How to Use This Website:</h2>
+        <ol>
+          <li>Click get started.</li>
+          <li>Give access to your camera.</li>
+          <li>Put your face inside the frame.</li>
+          <li>Try different facial expressions.</li>
+          <li>Have fun!</li>
+        </ol>
+        <button id="close-btn">Close</button>
+      </div>
+    </div>
+
   </body>
 </html>

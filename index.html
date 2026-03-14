@@ -24,7 +24,7 @@
   </head>
   <body class="has-background theme-day">
     <div class="theme-toggle">
-    <input type="radio" name="theme" id="day" checked>
+    <input type="radio" name="theme" id="day" value="day" checked>
     <label for="day">☀️</label>
 
   <input type="radio" name="theme" id="night" value="night">
@@ -34,8 +34,15 @@
   <label for="pink">🌸</label>
 
       <script>
-  const savedTheme = localStorage.getItem("theme") || "day";
-  document.documentElement.className = `theme-${savedTheme}`; 
+  (function(){
+    const BG_POS = { day: '20%', night: '50%', pink: '80%' };
+    const savedTheme = localStorage.getItem("theme") || "day";
+    document.body.classList.add(`theme-${savedTheme}`);
+    document.body.classList.add('has-background');
+    document.body.style.setProperty('--bg-x', BG_POS[savedTheme] || '50%');
+    const savedRadio = document.getElementById(savedTheme);
+    if (savedRadio) savedRadio.checked = true;
+  })();
     </script>
 
     <div class="slider"></div>
@@ -63,23 +70,6 @@
       </div>
     </div>
 
-    <script src="/src/landing.js" defer></script>
-    <script type="module" src="/src/camera.ts"></script>
-    <script>
-      const infoBtn = document.getElementById("info");
-      const closeBtn = document.getElementById("close-btn");
-      const infoCard = document.getElementById("info-card");
-
-      infoBtn.addEventListener("click", () =>
-        infoCard.classList.remove("hidden"),
-      );
-      closeBtn.addEventListener("click", () =>
-        infoCard.classList.add("hidden"),
-      );
-      infoCard.addEventListener("click", (e) => {
-        if (e.target === infoCard) infoCard.classList.add("hidden");
-      });
-    </script>
-    <script src="/src/theme.js"></script>
+  <script type="module" src="/src/main-landing.js"></script>
   </body>
 </html>
