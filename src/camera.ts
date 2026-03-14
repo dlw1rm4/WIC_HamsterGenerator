@@ -387,7 +387,6 @@ function setStatus(msg: string) {
   statusEl.textContent = msg;
 }
 
-<<<<<<< HEAD
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 
 // --- Sound Menu Listeners ---
@@ -407,8 +406,6 @@ if (muteBtn) {
     });
 }
 
-=======
->>>>>>> main
 // ─── Theme buttons ─────────────────────────────────────────
 
 const dayBtn = document.getElementById("dayBtn");
