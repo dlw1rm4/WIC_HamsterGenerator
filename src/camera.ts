@@ -1,7 +1,7 @@
 import "./style.css";
 import "./theme"
 import "./landing";
-import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
+import { FaceLandmarker, FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
 
 let volume = 0.5;
 let isMuted = false;
@@ -13,10 +13,11 @@ const soundLibrary: { [key: string]: HTMLAudioElement } = {
   surprised: new Audio('/sounds/SurprisedHampter.mp3'),
   neutral: new Audio('/sounds/NeutralHampter.mp3'),
   excited: new Audio('/sounds/ExcitedHampter.mp3'),
-  angry: new Audio('/sounds/AngryHampter.mp3')
+  angry: new Audio('/sounds/AngryHampter.mp3'),
+  shh: new Audio('/sounds/ShhHampter.mp3')
 };
 
-type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited";
+type Emotion = "happy" | "sad" | "surprised" | "angry" | "neutral" | "excited" | "shh";
 
 interface EmotionResult {
   //Any object that's a EmotionResult must have emotion type
@@ -32,6 +33,7 @@ const EMOTION_IMAGES: Record<Emotion, string> = {
   angry: "./images/expressions/angry.jpeg",
   neutral: "./images/expressions/neutral.jpeg",
   excited: "./images/expressions/excited.jpeg",
+  shh: "./images/expressions/shh.jpeg"
 };
 
 const EMOTION_IMAGE_ELEMENTS: Partial<Record<Emotion, HTMLImageElement>> = {};
@@ -39,6 +41,27 @@ for (const [emotion, src] of Object.entries(EMOTION_IMAGES) as [Emotion, string]
   const img = new Image();
   img.src = src;
   EMOTION_IMAGE_ELEMENTS[emotion] = img;
+}
+
+function getDistance(p1: {x: number, y: number}, p2: {x: number, y: number}) {
+  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+}
+
+function isPointingUp(landmarks: any[]): boolean {
+  // Landmarks: 8 = Index Tip, 7 = Index PIP, 12 = Middle Tip, 16 = Ring Tip, 20 = Pinky Tip
+  // In MediaPipe, smaller Y means HIGHER on the screen
+  
+  const indexTip = landmarks[8].y;
+  const indexPip = landmarks[7].y;
+  const middleTip = landmarks[12].y;
+  const ringTip = landmarks[16].y;
+  const pinkyTip = landmarks[20].y;
+
+  // Check if index is above its own joint AND above all other finger tips
+  const isIndexExtended = indexTip < indexPip;
+  const areOthersFolded = indexTip < middleTip && indexTip < ringTip && indexTip < pinkyTip;
+
+  return isIndexExtended && areOthersFolded;
 }
 
 // ─── Blend shape classifier ───────────────────────────────────────────────────
@@ -110,6 +133,7 @@ function classifyEmotion(
         eyeSquint +
         mouthShrug) /
         4,
+      shh: 0
   };
 
   // Clamp negatives to 0
@@ -153,6 +177,7 @@ const pills = document.querySelectorAll<HTMLElement>(".pill");
 // ─── State ────────────────────────────────────────────────────────────────────
 
 let faceLandmarker: FaceLandmarker;
+let handLandmarker: HandLandmarker;
 let webcamRunning = false;
 let lastVideoTime = -1;
 let currentEmotion: Emotion | null = null;
@@ -224,6 +249,15 @@ async function init() {
     numFaces: 1,
   });
 
+  handLandmarker = await HandLandmarker.createFromOptions(filesetResolver, {
+    baseOptions: {
+      modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+      delegate: "GPU",
+    },
+    runningMode: "VIDEO",
+    numHands: 2,
+  });
+
   await requestCamera();
 }
 
@@ -276,31 +310,58 @@ webcamButton.addEventListener("click", async () => {
 
 async function predict() {
   if (!webcamRunning) return;
-
   const nowMs = performance.now();
+
   if (lastVideoTime !== video.currentTime) {
     lastVideoTime = video.currentTime;
 
-    const result = faceLandmarker.detectForVideo(video, nowMs);
+    const faceResult = faceLandmarker.detectForVideo(video, nowMs);
+    const handResult = handLandmarker.detectForVideo(video, nowMs);
+    let detectedEmotion: Emotion | null = null;
 
-    if (result.faceLandmarks?.length) {
-      const lm = result.faceLandmarks[0]; 
+    // --- NEW: Proximity Check ---
+    let isFingerNearMouth = false;
 
-      if (result.faceBlendshapes?.[0]?.categories) {
-        const { emotion } = classifyEmotion(
-          result.faceBlendshapes[0].categories,
-        );
-        updateEmotionSmoothed(emotion);
-      }
-
-      drawImgCanvas(lm[10].x, lm[10].y); //Upper forehead x and y coordinates
+    if (handResult.landmarks?.length && faceResult.faceLandmarks?.length) {
+      const indexTip = handResult.landmarks[0][8];
+      const mouthCenter = faceResult.faceLandmarks[0][13]; // Landmark 13 is the inner lip center
       
+      const distance = getDistance(indexTip, mouthCenter);
+      
+      // If finger is close to mouth AND pointing up
+      if (distance < 0.08 && isPointingUp(handResult.landmarks[0])) {
+        isFingerNearMouth = true;
+      }
+    }
+
+    // 1. Hand Logic
+    if (handResult.landmarks?.length) {
+      const hand = handResult.landmarks[0];
+      if (isFingerNearMouth) {
+        detectedEmotion = "shh";
+        setStatus("Shhh! Finger is on face! 🤫");
+      } else {
+        setStatus("Hand detected! Move it to your face to shh.");
+      }
+      drawImgCanvas(hand[8].x, hand[8].y);
+    }
+
+    // 2. Face Logic (Fallback)
+    if (!detectedEmotion && faceResult.faceBlendshapes?.[0]?.categories) {
+      const { emotion } = classifyEmotion(faceResult.faceBlendshapes[0].categories);
+      detectedEmotion = emotion;
+      
+      if (!handResult.landmarks?.length && faceResult.faceLandmarks?.length) {
+          drawImgCanvas(faceResult.faceLandmarks[0][10].x, faceResult.faceLandmarks[0][10].y);
+      }
+    }
+
+    if (detectedEmotion) {
+      updateEmotionSmoothed(detectedEmotion);
     } else {
-      setStatus("No face detected...");
       clearEmotion();
     }
   }
-
   requestAnimationFrame(predict);
 }
 
